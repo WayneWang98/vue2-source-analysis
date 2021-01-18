@@ -1,5 +1,7 @@
 /* @flow */
 
+// runtime + compiler 版本入口文件
+
 import config from 'core/config'
 import { warn, cached } from 'core/util/index'
 import { mark, measure } from 'core/util/perf'
@@ -14,23 +16,25 @@ const idToTemplate = cached(id => {
   return el && el.innerHTML
 })
 
-const mount = Vue.prototype.$mount
-Vue.prototype.$mount = function ( // 重新定义了$mount方法
+const mount = Vue.prototype.$mount // 缓存mount方法
+Vue.prototype.$mount = function ( // 重新定义了$mount方法，runtime-only版本不存在这一块儿逻辑
   el?: string | Element,
   hydrating?: boolean
 ): Component {
   el = el && query(el)
 
   /* istanbul ignore if */
-  if (el === document.body || el === document.documentElement) { // vue不可以直接挂在到body和html上
+  // vue不可以直接挂在到body和html上，因为vue挂载时会覆盖最外层容器，覆盖了body或者html会导致文档结构不对
+  if (el === document.body || el === document.documentElement) { 
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
     )
     return this
   }
 
-  const options = this.$options
-  // resolve template/el and convert to render function
+  const options = this.$options // 获取options
+
+  // resolve template/el and convert to render function （Vue最终只认render函数）
   if (!options.render) {
     let template = options.template
     if (template) {
@@ -53,8 +57,8 @@ Vue.prototype.$mount = function ( // 重新定义了$mount方法
         }
         return this
       }
-    } else if (el) {
-      template = getOuterHTML(el)
+    } else if (el) { // 没有定义template
+      template = getOuterHTML(el) // 最终返回一个字符串
     }
     if (template) {
       /* istanbul ignore if */
