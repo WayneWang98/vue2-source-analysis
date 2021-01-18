@@ -138,6 +138,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
   }
 }
 
+// 挂载组件
 export function mountComponent (
   vm: Component,
   el: ?Element,
@@ -168,7 +169,7 @@ export function mountComponent (
 
   let updateComponent
   /* istanbul ignore if */
-  if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+  if (process.env.NODE_ENV !== 'production' && config.performance && mark) { // performance和mark与性能埋点有关
     updateComponent = () => {
       const name = vm._name
       const id = vm._uid
@@ -186,15 +187,15 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
-    updateComponent = () => {
-      vm._update(vm._render(), hydrating)
+    updateComponent = () => { // 实际上执行了一次真实的渲染
+      vm._update(vm._render(), hydrating) // hydrating与服务端渲染有关
     }
   }
 
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
-  new Watcher(vm, updateComponent, noop, {
+  new Watcher(vm, updateComponent, noop, { // “渲染watcher”  noop一般表示一个空函数
     before () {
       if (vm._isMounted && !vm._isDestroyed) {
         callHook(vm, 'beforeUpdate')
