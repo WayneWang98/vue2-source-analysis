@@ -9,4 +9,5 @@ import platformModules from 'web/runtime/modules/index' // 平台相关模块
 // built-in modules have been applied.
 const modules = platformModules.concat(baseModules)
 
-export const patch: Function = createPatchFunction({ nodeOps, modules }) // 类似高阶函数，做了函数柯里化
+// 类似高阶函数，做了函数柯里化，为了满足不同平台和模块的需求，一次性搞定平台和模块的差异，不用写一堆if else
+export const patch: Function = createPatchFunction({ nodeOps, modules }) 

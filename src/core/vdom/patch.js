@@ -30,7 +30,7 @@ import {
 
 export const emptyNode = new VNode('', {}, [])
 
-const hooks = ['create', 'activate', 'update', 'remove', 'destroy']
+const hooks = ['create', 'activate', 'update', 'remove', 'destroy'] // 钩子
 
 function sameVnode (a, b) {
   return (
@@ -82,6 +82,9 @@ export function createPatchFunction (backend) {
     }
   }
 
+
+  // 以下定义了一系列辅助函数
+
   function emptyNodeAt (elm) {
     return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm)
   }
@@ -122,6 +125,7 @@ export function createPatchFunction (backend) {
 
   let creatingElmInVPre = 0
 
+  // 把vnode挂载到真实的DOM上
   function createElm (
     vnode,
     insertedVnodeQueue,
@@ -187,7 +191,7 @@ export function createPatchFunction (backend) {
           }
           insert(parentElm, vnode.elm, refElm)
         }
-      } else {
+      } else { // 非weex平台
         createChildren(vnode, children, insertedVnodeQueue)
         if (isDef(data)) {
           invokeCreateHooks(vnode, insertedVnodeQueue)
@@ -698,7 +702,7 @@ export function createPatchFunction (backend) {
   }
 
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
-    if (isUndef(vnode)) {
+    if (isUndef(vnode)) { // 删除时的逻辑
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
     }
@@ -724,7 +728,7 @@ export function createPatchFunction (backend) {
             oldVnode.removeAttribute(SSR_ATTR)
             hydrating = true
           }
-          if (isTrue(hydrating)) {
+          if (isTrue(hydrating)) { // 服务端渲染
             if (hydrate(oldVnode, vnode, insertedVnodeQueue)) {
               invokeInsertHook(vnode, insertedVnodeQueue, true)
               return oldVnode
@@ -745,7 +749,7 @@ export function createPatchFunction (backend) {
 
         // replacing existing element
         const oldElm = oldVnode.elm
-        const parentElm = nodeOps.parentNode(oldElm)
+        const parentElm = nodeOps.parentNode(oldElm) // 父元素
 
         // create new node
         createElm(

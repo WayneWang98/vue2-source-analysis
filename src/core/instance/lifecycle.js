@@ -56,9 +56,9 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
-  Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
+  Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) { // _update会将vnode更新为真实的DOM
     const vm: Component = this
-    const prevEl = vm.$el
+    const prevEl = vm.$el // _update首次调用时，prevEL和prevVnode均为null
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
     vm._vnode = vnode
@@ -66,7 +66,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // based on the rendering backend used.
     if (!prevVnode) {
       // initial render
-      vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
+      vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */) // 第一个参数是一个真实的dom
     } else {
       // updates
       vm.$el = vm.__patch__(prevVnode, vnode)
